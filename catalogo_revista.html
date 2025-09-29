@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Digital</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #f5f5f5;
+            overflow-x: hidden;
+        }
+
+        .magazine-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* PORTADA */
+        .cover {
+            height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect fill="%231a1a2e" width="1200" height="800"/><g fill-opacity="0.1"><circle fill="%23fff" cx="200" cy="200" r="150"/><circle fill="%23fff" cx="900" cy="500" r="200"/><circle fill="%23fff" cx="600" cy="100" r="100"/></g></svg>');
+            opacity: 0.3;
+        }
+
+        .cover-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .video-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .magazine-title {
+            font-size: 80px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            animation: fadeInDown 1s ease;
+        }
+
+        .magazine-subtitle {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .edition-info {
+            font-size: 18px;
+            opacity: 0.8;
+            animation: fadeIn 1s ease 0.6s both;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* NUEVOS PRODUCTOS */
+        .new-arrivals {
+            padding: 80px 60px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .section-title {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1a1a2e;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 50px;
+            font-style: italic;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #1a1a2e, #0f3460);
+        }
+
+        .new-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .new-product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .new-product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .new-product-image {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .new-product-info {
+            padding: 25px;
+        }
+
+        .new-badge {
+            display: inline-block;
+            background: #ff4757;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .new-product-name {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1a1a2e;
+        }
+
+        .new-product-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #0f3460;
+        }
+
+        /* ÍNDICE */
+        .index-section {
+            padding: 80px 60px;
+            background: #fff;
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 30px;
+            border: 2px solid #1a1a2e;
+            background: white;
+            color: #1a1a2e;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .index-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .index-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 2px dotted #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .index-item:hover {
+            background: #f9f9f9;
+            padding-left: 30px;
+        }
+
+        .index-item.hidden {
+            display: none;
+        }
+
+        .index-name {
+            font-size: 22px;
+            color: #333;
+        }
+
+        .index-category {
+            font-size: 12px;
+            color: #0f3460;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .index-page {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0f3460;
+        }
+
+        /* PÁGINAS DE PRODUCTOS */
+        .product-page {
+            min-height: 100vh;
+            padding: 80px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .product-page:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 600px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            transition: transform 0.5s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.02);
+        }
+
+        .product-info {
+            padding: 40px;
+        }
+
+        .product-category {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #0f3460;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .product-name {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+            line-height: 1.2;
+        }
+
+        .product-description {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .product-price {
+            font-size: 42px;
+            font-weight: bold;
+            color: #0f3460;
+            margin-bottom: 30px;
+        }
+
+        .product-features {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .product-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .product-features li::before {
+            content: '✓';
+            color: #0f3460;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(15, 52, 96, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(15, 52, 96, 0.4);
+        }
+
+        /* COMPARADOR */
+        .comparator-section {
+            padding: 80px 60px;
+            background: #fff;
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .compare-card {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .compare-card:hover {
+            border-color: #1a1a2e;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .compare-card.selected {
+            border-color: #0f3460;
+            background: #f8f9fa;
+        }
+
+        .compare-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .compare-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1a1a2e;
+        }
+
+        .compare-price {
+            font-size: 24px;
+            color: #0f3460;
+            font-weight: bold;
+        }
+
+        .compare-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .compare-button:hover {
+            background: #0f3460;
+        }
+
+        .comparison-table {
+            display: none;
+            margin-top: 40px;
+            overflow-x: auto;
+        }
+
+        .comparison-table.show {
+            display: block;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th, .comparison-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .comparison-table th {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        /* TESTIMONIOS */
+        .testimonials-section {
+            padding: 80px 60px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%);
+            color: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .author-title {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .stars {
+            color: #ffd700;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        /* GALERÍA */
+        .gallery-section {
+            padding: 80px 60px;
+            background: #fff;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 50px;
+        }
+
+        .gallery-item {
+            height: 400px;
+            overflow: hidden;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-item.large {
+            grid-column: span 2;
+            grid-row: span 2;
+            height: 820px;
+        }
+
+        /* CONTRAPORTADA */
+        .back-cover {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 50%, #1a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 60px;
+        }
+
+        .contact-info {
+            margin-top: 60px;
+        }
+
+        .contact-item {
+            font-size: 20px;
+            margin: 15px 0;
+            opacity: 0.9;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 25px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .social-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* NAVEGACIÓN */
+        .nav-dots {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(26, 26, 46, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: #1a1a2e;
+            transform: scale(1.5);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 968px) {
+            .magazine-title {
+                font-size: 48px;
+            }
+
+            .product-page {
+                grid-template-columns: 1fr;
+                padding: 40px 30px;
+            }
+
+            .product-image {
+                height: 400px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-item.large {
+                grid-column: span 1;
+                grid-row: span 1;
+                height: 400px;
+            }
+
+            .index-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-dots {
+                display: none;
+            }
+
+            .new-products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="magazine-container">
+        <!-- PORTADA CON VIDEO -->
+        <section class="cover" id="portada">
+            <div class="video-background" id="video-bg">
+                <!-- Video se agregará aquí -->
+            </div>
+            <div class="cover-content">
+                <h1 class="magazine-title" id="titulo-revista">COLECCIÓN</h1>
+                <p class="magazine-subtitle" id="subtitulo-revista">Primavera / Verano 2025</p>
+                <p class="edition-info" id="info-edicion">Edición Especial</p>
+            </div>
+        </section>
+
+        <!-- NUEVOS PRODUCTOS -->
+        <section class="new-arrivals" id="nuevos">
+            <h2 class="section-title">Nuevos Arrivals</h2>
+            <p class="section-subtitle">Lo último en nuestra colección</p>
+            <div class="new-products-grid" id="new-products-grid">
+                <!-- Se generará con JavaScript -->
+            </div>
+        </section>
+
+        <!-- ÍNDICE CON FILTROS -->
+        <section class="index-section" id="indice">
+            <h2 class="section-title">Catálogo Completo</h2>
+            <div class="filter-buttons" id="filter-buttons">
+                <button class="filter-btn active" data-category="todos">Todos</button>
+            </div>
+            <div class="index-grid" id="indice-grid">
+                <!-- Se generará con JavaScript -->
+            </div>
+        </section>
+
+        <!-- PÁGINAS DE PRODUCTOS -->
+        <div id="productos-container">
+            <!-- Se generará con JavaScript -->
+        </div>
+
+        <!-- COMPARADOR -->
+        <section class="comparator-section" id="comparador">
+            <h2 class="section-title">Comparador de Productos</h2>
+            <p class="section-subtitle">Selecciona hasta 3 productos para comparar</p>
+            <div class="compare-grid" id="compare-grid">
+                <!-- Se generará con JavaScript -->
+            </div>
+            <div style="text-align: center;">
+                <button class="compare-button" id="compare-btn" onclick="showComparison()">Comparar Seleccionados</button>
+            </div>
+            <div class="comparison-table" id="comparison-table">
+                <!-- Tabla de comparación -->
+            </div>
+        </section>
+
+        <!-- TESTIMONIOS -->
+        <section class="testimonials-section" id="testimonios">
+            <h2 class="section-title" style="color: white;">Lo Que Dicen Nuestros Clientes</h2>
+            <div class="testimonials-grid" id="testimonials-grid">
+                <!-- Se generará con JavaScript -->
+            </div>
+        </section>
+
+        <!-- GALERÍA -->
+        <section class="gallery-section" id="galeria">
+            <h2 class="section-title">Galería</h2>
+            <div class="gallery-grid" id="galeria-grid">
+                <!-- Se generará con JavaScript -->
+            </div>
+        </section>
+
+        <!-- CONTRAPORTADA -->
+        <section class="back-cover" id="contraportada">
+            <h2 style="font-size: 48px; margin-bottom: 30px;" id="titulo-contacto">Contacto</h2>
+            <div class="contact-info" id="info-contacto">
+                <!-- Se generará con JavaScript -->
+            </div>
+            <div class="social-icons" id="redes-sociales">
+                <!-- Se generará con JavaScript -->
+            </div>
+        </section>
+    </div>
+
+    <!-- NAVEGACIÓN CON PUNTOS -->
+    <div class="nav-dots" id="nav-dots">
+        <!-- Se generará con JavaScript -->
+    </div>
+
+    <script>
+        // ============================================
+        // 📝 CONFIGURACIÓN DEL CATÁLOGO
+        // ============================================
+        
+        const catalogoConfig = {
+            // INFORMACIÓN DE LA PORTADA
+            titulo: "COLECCIÓN",
+            subtitulo: "Primavera / Verano 2025",
+            edicion: "Edición Especial",
+            
+            // VIDEO DE PORTADA (ID de YouTube o dejar vacío)
+            videoPortada: "L_LUpnjgPso", // Ejemplo de video de moda
+            
+            // PRODUCTOS (Agregar tantos como necesites)
+            productos: [
+                {
+                    nombre: "Vestido Elegante Aurora",
+                    categoria: "Moda Mujer",
+                    descripcion: "Diseño exclusivo en seda italiana de alta calidad. Perfecto para eventos especiales y ocasiones formales. Confeccionado con atención al detalle y acabados impecables que realzan la silueta femenina.",
+                    precio: "€299",
+                    imagen: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&q=80",
+                    caracteristicas: [
+                        "100% Seda italiana",
+                        "Diseño exclusivo",
+                        "Tallas disponibles: XS a XL",
+                        "Disponible en 5 colores",
+                        "Lavado en seco"
+                    ],
+                    urlCompra: "#",
+                    nuevo: true
+                },
+                {
+                    nombre: "Traje Ejecutivo Milano",
+                    categoria: "Moda Hombre",
+                    descripcion: "Traje de corte moderno confeccionado en lana merino de origen australiano. Ideal para el profesional contemporáneo que busca elegancia y comodidad sin renunciar al estilo.",
+                    precio: "€499",
+                    imagen: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&q=80",
+                    caracteristicas: [
+                        "Lana merino premium",
+                        "Corte slim fit",
+                        "Forro de seda",
+                        "Personalización disponible",
+                        "Garantía de 2 años"
+                    ],
+                    urlCompra: "#",
+                    nuevo: true
+                },
+                {
+                    nombre: "Bolso de Diseñador Venezia",
+                    categoria: "Accesorios",
+                    descripcion: "Bolso artesanal en cuero genuino con herrajes dorados bañados en oro. Una pieza atemporal que complementa cualquier outfit, desde casual hasta elegante.",
+                    precio: "€349",
+                    imagen: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=1200&q=80",
+                    caracteristicas: [
+                        "Cuero genuino italiano",
+                        "Hecho a mano",
+                        "Compartimentos múltiples",
+                        "Herrajes en oro de 24k",
+                        "Edición limitada"
+                    ],
+                    urlCompra: "#",
+                    nuevo: false
+                },
+                {
+                    nombre: "Reloj Suizo Chronograph",
+                    categoria: "Joyería",
+                    descripcion: "Reloj automático de manufactura suiza con movimiento visible a través del fondo de cristal de zafiro. La perfección mecánica en tu muñeca, una obra de arte funcional.",
+                    precio: "€1,299",
+                    imagen: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=1200&q=80",
+                    caracteristicas: [
+                        "Movimiento automático suizo",
+                        "Cristal de zafiro antirrayado",
+                        "Resistente al agua 100m",
+                        "Garantía internacional de 5 años",
+                        "Estuche de colección incluido"
+                    ],
+                    urlCompra: "#",
+                    nuevo: true
+                },
+                {
+                    nombre: "Zapatillas Deportivas Elite",
+                    categoria: "Calzado",
+                    descripcion: "Zapatillas de edición limitada con tecnología de amortiguación avanzada. Diseño moderno que combina performance deportiva con estilo urbano contemporáneo.",
+                    precio: "€189",
+                    imagen: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=1200&q=80",
+                    caracteristicas: [
+                        "Tecnología de amortiguación premium",
+                        "Materiales reciclados sostenibles",
+                        "Suela de goma antideslizante",
+                        "Diseño ergonómico",
+                        "Edición limitada numerada"
+                    ],
+                    urlCompra: "#",
+                    nuevo: false
+                },
+                {
+                    nombre: "Chaqueta de Cuero Vintage",
+                    categoria: "Outerwear",
+                    descripcion: "Chaqueta confeccionada en cuero genuino envejecido con tratamiento especial. Un clásico atemporal que mejora con el paso del tiempo, cada pieza es única.",
+                    precio: "€449",
+                    imagen: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=1200&q=80",
+                    caracteristicas: [
+                        "Cuero genuino envejecido",
+                        "Forro interior acolchado",
+                        "Cremallera YKK de alta calidad",
+                        "Bolsillos internos y externos",
+                        "Tratamiento impermeable"
+                    ],
+                    urlCompra: "#",
+                    nuevo: false
+                },
+                {
+                    nombre: "Gafas de Sol Aviador",
+                    categoria: "Accesorios",
+                    descripcion: "Gafas de sol con montura en titanio ultraligero y lentes polarizadas de protección UV400. Estilo icónico que nunca pasa de moda.",
+                    precio: "€159",
+                    imagen: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=1200&q=80",
+                    caracteristicas: [
+                        "Montura de titanio",
+                        "Lentes polarizadas UV400",
+                        "Ultraligeras y resistentes",
+                        "Estuche rígido incluido",
+                        "Garantía de por vida"
+                    ],
+                    urlCompra: "#",
+                    nuevo: true
+                },
+                {
+                    nombre: "Perfume Signature Edition",
+                    categoria: "Fragancias",
+                    descripcion: "Fragancia exclusiva con notas de bergamota, ámbar y sándalo. Una experiencia olfativa única que define tu personalidad con elegancia y sofisticación.",
+                    precio: "€125",
+                    imagen: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=1200&q=80",
+                    caracteristicas: [
+                        "Eau de Parfum 100ml",
+                        "Notas de bergamota y ámbar",
+                        "Duración de 8-10 horas",
+                        "Botella de cristal tallado",
+                        "Caja de presentación premium"
+                    ],
+                    urlCompra: "#",
+                    nuevo: false
+                }
+            ],
+            
+            // TESTIMONIOS DE CLIENTES
+            testimonios: [
+                {
+                    nombre: "Ana Martínez",
+                    cargo: "Empresaria",
+                    texto: "La calidad de los productos es excepcional. Cada pieza que he comprado ha superado mis expectativas. El servicio al cliente es impecable y la entrega siempre puntual.",
+                    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&q=80",
+                    estrellas: 5
+                },
+                {
+                    nombre: "Carlos Rodríguez",
+                    cargo: "Director Creativo",
+                    texto: "Diseños únicos y exclusivos que no encuentras en otro lugar. La atención al detalle es increíble. Totalmente recomendado para quien busca calidad y distinción.",
+                    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&q=80",
+                    estrellas: 5
+                },
+                {
+                    nombre: "Laura Sánchez",
+                    cargo: "Influencer de Moda",
+                    texto: "Cada compra es una experiencia premium. Los productos llegan perfectamente empaquetados y la calidad es inigualable. Sin duda mi tienda favorita para ocasiones especiales.",
+                    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&q=80",
+                    estrellas: 5
+                },
+                {
+                    nombre: "Miguel Torres",
+                    cargo: "Arquitecto",
+                    texto: "Llevo años comprando aquí y nunca me han defraudado. La relación calidad-precio es excelente y el catálogo siempre tiene novedades interesantes.",
+                    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&q=80",
+                    estrellas: 5
+                },
+                {
+                    nombre: "Patricia López",
+                    cargo: "Abogada",
+                    texto: "Productos de lujo al alcance de la mano. El proceso de compra es muy sencillo y el equipo siempre está disponible para resolver cualquier duda. ¡Excelente!",
+                    avatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=200&q=80",
+                    estrellas: 5
+                },
+                {
+                    nombre: "David Gómez",
+                    cargo: "Consultor",
+                    texto: "La mejor inversión en mi guardarropa. Cada pieza que compro se convierte en un básico que uso constantemente. Calidad garantizada en cada producto.",
+                    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80",
+                    estrellas: 5
+                }
+            ],
+            
+            // GALERÍA DE IMÁGENES
+            galeria: [
+                "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&q=80",
+                "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&q=80",
+                "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1200&q=80",
+                "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1200&q=80",
+                "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1200&q=80",
+                "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1200&q=80",
+                "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=1200&q=80",
+                "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=1200&q=80",
+                "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=1200&q=80"
+            ],
+            
+            // INFORMACIÓN DE CONTACTO
+            contacto: {
+                telefono: "+34 912 345 678",
+                email: "info@tienda.com",
+                direccion: "Calle Gran Vía 123, Madrid",
+                web: "www.mitienda.com"
+            },
+            
+            // REDES SOCIALES
+            redes: {
+                instagram: "https://instagram.com/mitienda",
+                facebook: "https://facebook.com/mitienda",
+                twitter: "https://twitter.com/mitienda",
+                pinterest: "https://pinterest.com/mitienda"
+            }
+        };
+        
+        // ============================================
+        // NO EDITAR DEBAJO DE AQUÍ
+        // ============================================
+
+        let selectedProducts = [];
+
+        function generarCatalogo() {
+            // Actualizar portada
+            document.getElementById('titulo-revista').textContent = catalogoConfig.titulo;
+            document.getElementById('subtitulo-revista').textContent = catalogoConfig.subtitulo;
+            document.getElementById('info-edicion').textContent = catalogoConfig.edicion;
+            
+            // Video de portada
+            if (catalogoConfig.videoPortada) {
+                document.getElementById('video-bg').innerHTML = `
+                    <iframe src="https://www.youtube.com/embed/${catalogoConfig.videoPortada}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&playlist=${catalogoConfig.videoPortada}" frameborder="0" allow="autoplay; encrypted-media"></iframe>
+                `;
+            }
+            
+            // Nuevos productos
+            const newProductsGrid = document.getElementById('new-products-grid');
+            catalogoConfig.productos.filter(p => p.nuevo).forEach(producto => {
+                newProductsGrid.innerHTML += `
+                    <div class="new-product-card" onclick="scrollToSection('producto-${catalogoConfig.productos.indexOf(producto)}')">
+                        <img src="${producto.imagen}" alt="${producto.nombre}" class="new-product-image">
+                        <div class="new-product-info">
+                            <span class="new-badge">Nuevo</span>
+                            <h3 class="new-product-name">${producto.nombre}</h3>
+                            <p class="new-product-price">${producto.precio}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Filtros de categoría
+            const categorias = ['todos', ...new Set(catalogoConfig.productos.map(p => p.categoria))];
+            const filterButtons = document.getElementById('filter-buttons');
+            filterButtons.innerHTML = '';
+            categorias.forEach(cat => {
+                filterButtons.innerHTML += `
+                    <button class="filter-btn ${cat === 'todos' ? 'active' : ''}" data-category="${cat}" onclick="filtrarProductos('${cat}')">${cat === 'todos' ? 'Todos' : cat}</button>
+                `;
+            });
+            
+            // Generar índice
+            const indiceGrid = document.getElementById('indice-grid');
+            catalogoConfig.productos.forEach((producto, index) => {
+                indiceGrid.innerHTML += `
+                    <div class="index-item" data-category="${producto.categoria}" onclick="scrollToSection('producto-${index}')">
+                        <div>
+                            <div class="index-name">${producto.nombre}</div>
+                            <div class="index-category">${producto.categoria}</div>
+                        </div>
+                        <span class="index-page">${index + 1}</span>
+                    </div>
+                `;
+            });
+            
+            // Generar productos
+            const productosContainer = document.getElementById('productos-container');
+            catalogoConfig.productos.forEach((producto, index) => {
+                const features = producto.caracteristicas.map(f => `<li>${f}</li>`).join('');
+                const isEven = index % 2 === 0;
+                
+                productosContainer.innerHTML += `
+                    <section class="product-page" id="producto-${index}">
+                        ${isEven ? `
+                            <img src="${producto.imagen}" alt="${producto.nombre}" class="product-image">
+                            <div class="product-info">
+                        ` : `
+                            <div class="product-info">
+                        `}
+                                <div class="product-category">${producto.categoria}</div>
+                                <h2 class="product-name">${producto.nombre}</h2>
+                                <p class="product-description">${producto.descripcion}</p>
+                                <div class="product-price">${producto.precio}</div>
+                                <ul class="product-features">
+                                    ${features}
+                                </ul>
+                                <a href="${producto.urlCompra}" class="cta-button">Comprar Ahora</a>
+                            </div>
+                        ${!isEven ? `
+                            <img src="${producto.imagen}" alt="${producto.nombre}" class="product-image">
+                        ` : ''}
+                    </section>
+                `;
+            });
+            
+            // Comparador
+            const compareGrid = document.getElementById('compare-grid');
+            catalogoConfig.productos.forEach((producto, index) => {
+                compareGrid.innerHTML += `
+                    <div class="compare-card" onclick="toggleCompare(${index})">
+                        <img src="${producto.imagen}" alt="${producto.nombre}" class="compare-image">
+                        <div class="compare-name">${producto.nombre}</div>
+                        <div class="compare-price">${producto.precio}</div>
+                    </div>
+                `;
+            });
+            
+            // Testimonios
+            const testimonialsGrid = document.getElementById('testimonials-grid');
+            catalogoConfig.testimonios.forEach(test => {
+                const stars = '★'.repeat(test.estrellas);
+                testimonialsGrid.innerHTML += `
+                    <div class="testimonial-card">
+                        <div class="stars">${stars}</div>
+                        <p class="testimonial-text">"${test.texto}"</p>
+                        <div class="testimonial-author">
+                            <img src="${test.avatar}" alt="${test.nombre}" class="author-avatar">
+                            <div class="author-info">
+                                <div class="author-name">${test.nombre}</div>
+                                <div class="author-title">${test.cargo}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Generar galería
+            const galeriaGrid = document.getElementById('galeria-grid');
+            catalogoConfig.galeria.forEach((img, index) => {
+                const isLarge = index === 0 || index === 3;
+                galeriaGrid.innerHTML += `
+                    <div class="gallery-item ${isLarge ? 'large' : ''}" onclick="window.open('${img}', '_blank')">
+                        <img src="${img}" alt="Galería ${index + 1}" loading="lazy">
+                    </div>
+                `;
+            });
+            
+            // Contacto
+            const infoContacto = document.getElementById('info-contacto');
+            infoContacto.innerHTML = `
+                <div class="contact-item">📞 ${catalogoConfig.contacto.telefono}</div>
+                <div class="contact-item">📧 ${catalogoConfig.contacto.email}</div>
+                <div class="contact-item">📍 ${catalogoConfig.contacto.direccion}</div>
+                <div class="contact-item">🌐 ${catalogoConfig.contacto.web}</div>
+            `;
+            
+            // Redes sociales
+            const redesSociales = document.getElementById('redes-sociales');
+            if (catalogoConfig.redes.instagram) {
+                redesSociales.innerHTML += `<a href="${catalogoConfig.redes.instagram}" class="social-icon" target="_blank">📷</a>`;
+            }
+            if (catalogoConfig.redes.facebook) {
+                redesSociales.innerHTML += `<a href="${catalogoConfig.redes.facebook}" class="social-icon" target="_blank">f</a>`;
+            }
+            if (catalogoConfig.redes.twitter) {
+                redesSociales.innerHTML += `<a href="${catalogoConfig.redes.twitter}" class="social-icon" target="_blank">𝕏</a>`;
+            }
+            if (catalogoConfig.redes.pinterest) {
+                redesSociales.innerHTML += `<a href="${catalogoConfig.redes.pinterest}" class="social-icon" target="_blank">📌</a>`;
+            }
+            
+            // Navegación por puntos
+            generarNavegacion();
+        }
+
+        function filtrarProductos(categoria) {
+            const items = document.querySelectorAll('.index-item');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === categoria);
+            });
+            
+            items.forEach(item => {
+                if (categoria === 'todos' || item.dataset.category === categoria) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function toggleCompare(index) {
+            const cards = document.querySelectorAll('.compare-card');
+            const card = cards[index];
+            
+            if (selectedProducts.includes(index)) {
+                selectedProducts = selectedProducts.filter(i => i !== index);
+                card.classList.remove('selected');
+            } else if (selectedProducts.length < 3) {
+                selectedProducts.push(index);
+                card.classList.add('selected');
+            } else {
+                alert('Solo puedes comparar hasta 3 productos');
+            }
+        }
+
+        function showComparison() {
+            if (selectedProducts.length < 2) {
+                alert('Selecciona al menos 2 productos para comparar');
+                return;
+            }
+            
+            const table = document.getElementById('comparison-table');
+            let html = '<table><thead><tr><th>Característica</th>';
+            
+            selectedProducts.forEach(i => {
+                html += `<th>${catalogoConfig.productos[i].nombre}</th>`;
+            });
+            
+            html += '</tr></thead><tbody>';
+            
+            // Precio
+            html += '<tr><td><strong>Precio</strong></td>';
+            selectedProducts.forEach(i => {
+                html += `<td>${catalogoConfig.productos[i].precio}</td>`;
+            });
+            html += '</tr>';
+            
+            // Categoría
+            html += '<tr><td><strong>Categoría</strong></td>';
+            selectedProducts.forEach(i => {
+                html += `<td>${catalogoConfig.productos[i].categoria}</td>`;
+            });
+            html += '</tr>';
+            
+            // Características
+            const maxFeatures = Math.max(...selectedProducts.map(i => catalogoConfig.productos[i].caracteristicas.length));
+            for (let j = 0; j < maxFeatures; j++) {
+                html += `<tr><td><strong>Característica ${j + 1}</strong></td>`;
+                selectedProducts.forEach(i => {
+                    const feature = catalogoConfig.productos[i].caracteristicas[j] || '-';
+                    html += `<td>${feature}</td>`;
+                });
+                html += '</tr>';
+            }
+            
+            html += '</tbody></table>';
+            table.innerHTML = html;
+            table.classList.add('show');
+            
+            // Scroll a la tabla
+            table.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function generarNavegacion() {
+            const sections = ['portada', 'nuevos', 'indice', ...catalogoConfig.productos.map((_, i) => `producto-${i}`), 'comparador', 'testimonios', 'galeria', 'contraportada'];
+            const navDots = document.getElementById('nav-dots');
+            
+            sections.forEach((section, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                if (index === 0) dot.classList.add('active');
+                dot.onclick = () => scrollToSection(section);
+                navDots.appendChild(dot);
+            });
+            
+            // Observer para activar puntos
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = sections.indexOf(entry.target.id);
+                        document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+                            dot.classList.toggle('active', i === index);
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) observer.observe(el);
+            });
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Inicializar
+        window.addEventListener('load', generarCatalogo);
+    </script>
+</body>
+</html>
